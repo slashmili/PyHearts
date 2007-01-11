@@ -176,19 +176,28 @@ class Player:
                         else:
                             retcard=None
         
-        #check if has not card type to play play with bigger Hearts on hand
+        #check if has not card type to play play with Queen Spades or  bigger Hearts on hand
         if len(cardInGround)!=0   :
             if self.hastThisType(cardInGround[0][0].type)==False and self.hastThisType(cardType.Hearts)==True:
                 maxNumOfHeartsInHand=0
-                for card in self.cardsInHand:
-                    if card.type==cardType.Hearts and card.name>maxNumOfHeartsInHand and card.isPlayed==False:
-                        maxNumOfHeartsInHand=card.name
-                        retcard=card
-                if retcard:
-                    if self.checkPlayCard(retcard, cardInGround, numOfDeckPlay):
-                        return  self.setAsPlay(retcard)
-                    else:
-                        retcard=None
+                if self.hasQueenSpades==True:
+                    for card in self.cardsInHand:
+                        if card.type==cardType.Spades and card.name==cardNumber.queen:
+                            if card.isPlayed==False:
+                                if self.checkPlayCard(retcard, cardInGround, numOfDeckPlay):
+                                    retcard=card
+                                    return  self.setAsPlay(retcard)
+                                    break
+                else:
+                    for card in self.cardsInHand:
+                        if card.type==cardType.Hearts and card.name>maxNumOfHeartsInHand and card.isPlayed==False:
+                            maxNumOfHeartsInHand=card.name
+                            retcard=card
+                    if retcard:
+                        if self.checkPlayCard(retcard, cardInGround, numOfDeckPlay):
+                            return  self.setAsPlay(retcard)
+                        else:
+                            retcard=None
                     
         #if is any card in ground try to find max in hand and min in ground    
         if len ( cardInGround )!=0:
@@ -214,7 +223,7 @@ class Player:
             minCard=14
             for card in self.cardsInHand:
                 if card.isPlayed==False and card.type==cardTypeToPlay and card.name<minCard :
-                    minCard=card.name
+                    minCard=card.name    
                     retcard=card
             if retcard:
                 if self.checkPlayCard(retcard, cardInGround, numOfDeckPlay):
@@ -234,6 +243,20 @@ class Player:
                         continue
                     if self.tryDontPlayClubs==True and card.type==cardType.Clubs:
                         continue
+                    #chek do not start play game with Hearts
+                    if card.type==cardType.Hearts:
+                        if self.checkCanPlayHearts(card, playedCard)==False:
+                            continue
+                    #check do not start play game with Queen Spades
+                    if card.name==cardNumber.queen and card.type==cardType.Spades:
+                        continue
+                    #check if not play QueenSpades do not play with Ace and king off Spades
+                    if self.isQueenSpadesPlayed==False:
+                        if card.name==cardNumber.Ace and card.type==cardType.Spades:
+                            continue
+                        if card.name==cardNumber.king and card.type==cardType.Spades:
+                            continue
+                        
                     if self.checkPlayCard(card, cardInGround, numOfDeckPlay):
                         retcard=card
             if retcard:
@@ -249,6 +272,33 @@ class Player:
         if retcard:
             return self.setAsPlay(retcard)
     
+    #check card and cards in Played card on type Hearts If didnt play larger than card number palying is safe
+    def checkCanPlayHearts(self,card,playedCard):
+        maxHeartsPlayedCard=0
+        #find max hearts play in played card
+        for cards in playedCard:
+            if cards[0].type==cardType.Hearts:
+                if cards[0].name>maxHeartsPlayedCard:
+                    maxHeartsPlayedCard=cards[0].name
+            if cards[1].type==cardType.Hearts:
+                if cards[1].name>maxHeartsPlayedCard:
+                    maxHeartsPlayedCard=cards[1].name
+            if cards[2].type==cardType.Hearts:
+                if cards[2].name>maxHeartsPlayedCard:
+                    maxHeartsPlayedCard=cards[2].name
+            if cards[3].type==cardType.Hearts:
+                if cards[2].name>maxHeartsPlayedCard:
+                    maxHeartsPlayedCard=cards[3].name
+        #find max hearts in his hand
+        for tmpCard in self.cardsInHand:
+            if tmpCard.type==cardType.Hearts:
+                if tmpCard>maxHeartsPlayedCard:
+                    maxHeartsPlayedCard=tmpCard
+        if card.name<maxHeartsPlayedCard:
+            return True
+        return False
+                
+        pass
     def setAsPlay(self,card):
         card.isPlayed=True
         if card.name==cardNumber.queen and cardType.Spades==card.type:
