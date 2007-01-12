@@ -107,7 +107,24 @@ class Player:
                         return self.setAsPlay(retcard)
                     else:
                         retcard=None
-        
+        #check if his 4 palyer to paly game is cards in ground is not bad play bigger
+        if len(cardInGround)==3:
+            if self.hastThisType(cardInGround[0][0].type) and cardInGround[0][0].type!= cardType.Hearts: 
+                tmpCard=0
+                for card in self.cardsInHand:
+                    if card.type==cardInGround[0][0].type and card.isPlayed==False and card.name>tmpCard:
+                        if card.name==cardNumber.queen and card.type==cardType.Spades:
+                            continue
+                        if card.name>cardNumber.queen and card.type==cardType.Spades and self.checkIsPlayHeart(playedCard)==False:
+                            continue
+                        
+                        retcard=card
+                        tmpCard=card.name
+                if retcard:
+                    if self.checkPlayCard(retcard, cardInGround, numOfDeckPlay):
+                        return self.setAsPlay(retcard)
+                    else:
+                        retcard=None
         #if has Queen of Spades check this conditions
         if self.hasQueenSpades==True:                
             #check if has Queen of Spades and has not Type of Play Card, Play with Queen of Spades
@@ -122,20 +139,7 @@ class Player:
                             else:
                                 retcard=None                
                             break
-            #check if his turn to bein game and has not Queen of Spades try to play with Spades less than Queen
-            if self.checkIsPlayedQueen(playedCard)==False and len(cardInGround)==0 :
-                if self.hastThisType(cardType.Spades)==True:
-                    tmpCard=cardNumber.queen
-                    for i in range(13):
-                        if self.cardsInHand[i].isPlayed==False:
-                            if self.cardsInHand[i].type==cardType.Spades and self.cardsInHand[i].name<tmpCard:
-                                retcard=self.cardsInHand[i]
-                                tmpCard=self.cardsInHand[i].name
-                if retcard:
-                    if self.checkPlayCard(retcard, cardInGround, numOfDeckPlay):
-                        return self.setAsPlay(retcard)
-                    else:
-                        retcard=None
+
             #check if has Queen of Spades and played  bigger than Queen Play Queen Now
             if len(cardInGround)!=0:
                 if cardInGround[0][0].type==cardType.Spades:
@@ -154,7 +158,42 @@ class Player:
                                 else:
                                     retcard=None
                                 break
-                
+            
+            #check if has played Spades and just have Queen or more
+            if len(cardInGround)!=0:
+                if cardInGround[0][0].type==cardType.Spades:
+                    hasLessThanQueenSpades=False
+                    hasMoreThanQueenSpades=False
+                    for card in self.cardsInHand:
+                        if card.type==cardType.Spades and card.isPlayed==False :
+                            if card.name>cardNumber.queen:
+                                hasMoreThanQueenSpades=True
+                            if card.name<cardNumber:
+                                hasLessThanQueenSpades=True
+                    if hasLessThanQueenSpades==False and hasMoreThanQueenSpades==True:
+                        for card in self.cardsInHand:
+                            if cardType.Spades==card.type and card.isPlayed==False and card.name>cardNumber.queen:
+                                if self.checkPlayCard(retcard, cardInGround, numOfDeckPlay):
+                                    return self.setAsPlay(retcard)
+                                else:
+                                    retcard=None
+                                
+                        
+                        
+        #check if his turn to bein game and has not Queen of Spades try to play with Spades less than Queen
+        if self.checkIsPlayedQueen(playedCard)==False and self.hasQueenSpades==False and len(cardInGround)==0 :
+            if self.hastThisType(cardType.Spades)==True:
+                tmpCard=cardNumber.queen
+                for i in range(13):
+                    if self.cardsInHand[i].isPlayed==False:
+                        if self.cardsInHand[i].type==cardType.Spades and self.cardsInHand[i].name<tmpCard:
+                            retcard=self.cardsInHand[i]
+                            tmpCard=self.cardsInHand[i].name
+            if retcard:
+                if self.checkPlayCard(retcard, cardInGround, numOfDeckPlay):
+                    return self.setAsPlay(retcard)
+                else:
+                    retcard=None                    
         #check if 
         #check if has not play Queen of Spades yet and in this ground has Queen play less than Queen of Spades
         if len(cardInGround)!=0  :
