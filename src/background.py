@@ -114,10 +114,12 @@ class background:
                            if self.selectedCard:
                                if self.checkPlayCard(self.selectedCard,self.player4)==False:
                                    self.selectedCard=None
-                                   break                               
+                                   break
+                               
                                self.moveCardSlowly(self.selectedCard,screenPlayer4[14])
                                #self.selectedCard.isPlayed=True
                                self.player4.currentPlay=self.selectedCard
+                               
                                self.tmpPlayedCard.append([self.selectedCard,4])
                                #print "Player 4 play ",self.selectedCard.name
                                self.selectedCard=None
