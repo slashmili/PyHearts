@@ -435,8 +435,8 @@ class Player:
     
     def getCardImg(self,index):                
         
-        cardimg,cardrct=self.cardsInHand[index].getfrontImage()
-        return cardimg
+        #cardimg,cardrct=self.cardsInHand[index].getfrontImage()
+        #return cardimg
         
         if self.isHuman==True :
             cardimg,cardrct=self.cardsInHand[index].getfrontImage()
