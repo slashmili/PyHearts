@@ -310,13 +310,35 @@ class Player:
                         continue
                     #chek do not start play game with Hearts
                     if card.type==cardType.Hearts:
-                        if self.checkCanPlayHearts(card, playedCard)==False:
-                            continue
+                        continue
+                        #if self.checkCanPlayHearts(card, playedCard)==False:
+                            #continue
                     #check do not start play game with Queen Spades
                     if card.name==cardNumber.queen and card.type==cardType.Spades:
                         continue
                     #check if not play QueenSpades do not play with Ace and king off Spades
                     if self.isQueenSpadesPlayed==False:
+                        #check if just have Bigger Than Queen Of Spades and just have Hearts play with little card on hearts
+                        if (card.name==cardNumber.Ace or card.name==cardNumber.king or card.name==cardNumber.queen)  and card.type==cardType.Spades:
+                            hasAnotherCard=False
+                            for card in self.cardsInHand:
+                                if card.type==cardType.Spades and (card.name<cardNumber.queen):
+                                    hasAnotherCard=True
+                                    break
+                                if card.type!=cardType.Hearts and card.type!=cardType.Spades:
+                                    hasAnotherCard=True
+                                    break
+                            if hasAnotherCard==False:
+                                MinCardNumber=15
+                                for card in self.cardsInHand:
+                                    if card.type==cardType.Hearts and card.name<MinCardNumber:
+                                        MinCardNumber=card.name
+                                        retcard=card
+                                if retcard:
+                                    if self.checkPlayCard(card, cardInGround, numOfDeckPlay):
+                                        return self.setAsPlay(retcard)
+                                    else:
+                                        retcard=None
                         if card.name==cardNumber.Ace and card.type==cardType.Spades:
                             continue
                         if card.name==cardNumber.king and card.type==cardType.Spades:
