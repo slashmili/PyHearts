@@ -58,7 +58,11 @@ class background:
         pygame.display.flip() 
         
         self.numOfDeckPlay=0         
-        
+        self.players=[]
+        self.players.append(self.player1)
+        self.players.append(self.player2)
+        self.players.append(self.player3)
+        self.players.append(self.player4)
         #pygame.time.delay(5000)
        # import sys
         #sys.exit()
@@ -78,7 +82,7 @@ class background:
                 self.playAgain()
             indD+=1
             if self.turnPlay==1 and self.player1.currentPlay==None:
-                self.selectedCard=self.player1.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay)
+                self.selectedCard=self.player1.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay,self.players)
 
                 self.player1.currentPlay=self.selectedCard
                 self.moveCardSlowly(self.selectedCard,screenPlayer1[14])
@@ -88,7 +92,7 @@ class background:
                 
                 
             elif self.turnPlay==2 and self.player2.currentPlay==None:
-                self.selectedCard=self.player2.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay)
+                self.selectedCard=self.player2.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay,self.players)
                 self.player2.currentPlay=self.selectedCard
                 self.moveCardSlowly(self.selectedCard,screenPlayer2[14])
                 self.tmpPlayedCard.append([self.selectedCard,2])
@@ -96,7 +100,7 @@ class background:
                 self.selectedCard=None
                 #pygame.time.delay(500)
             elif self.turnPlay==3 and self.player3.currentPlay==None:
-                self.selectedCard=self.player3.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay)
+                self.selectedCard=self.player3.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay,self.players)
                 self.player3.currentPlay=self.selectedCard
                 self.moveCardSlowly(self.selectedCard,screenPlayer3[14])
                 self.tmpPlayedCard.append([self.selectedCard,3])
@@ -122,7 +126,7 @@ class background:
                                
                                self.tmpPlayedCard.append([self.selectedCard,4])
                                #print "Player 4 play ",self.selectedCard.name
-                               self.selectedCard=None
+                               #self.selectedCard=None
                            
                            
                        #print event.pos[0],event.pos[1]
