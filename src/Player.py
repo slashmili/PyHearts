@@ -41,6 +41,8 @@ class Player:
         self.tryDontPlayDaimond=False
         self.tryDontPlayClubs=False
         self.tryGetHearts=False
+        self.result=0
+        self.tmpResult=0
 
         
     def addHand(self,card):
