@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #Game developed by Milad Rastian (miladmovie atsign gmail dot com) 
-#http://weblog.miladmovie.com/
+#https://gna.org/projects/pyhearts/
 #I wrote this Game for course Artificial Intelligent in Yazd Jahad University
 #Thanks my teacher Mr Asghar Dehghani
 #I in this project I know how much I Love Python !
@@ -19,12 +19,13 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#Read more about GNU General Public License :http://www.gnu.org/licenses/gpl.txt
+
 import os, pygame,math
 from pygame.locals import *
 from Player import *
 from inits import  *
 from  Card import *
+
 class background:
     def __init__(self):
         pygame.init()
@@ -34,10 +35,14 @@ class background:
         self.tmpPlayedCard=[]
         self.errorMsg=""
         self.isPlayHeart=False
-        pygame.display.set_caption('Hearts - beta 0.1')
+        pygame.display.set_caption('Hearts - 2.0.1')
 
                 
-        
+        self.playerName=[]
+        self.playerName.append("gluegadget")
+        self.playerName.append("dark_side")
+        self.playerName.append("carp")
+        self.playerName.append("jandark")
        
         #reset hands
         self.playAgain()
@@ -67,7 +72,7 @@ class background:
        # import sys
         #sys.exit()
         indD=0
-        while 1:         
+        while 1:  
             if self.numOfDeckPlay==13:
                 print ""
                 print ""
@@ -90,6 +95,7 @@ class background:
                 #print "Player 1 play ",self.selectedCard.name
                 self.selectedCard=None
                 
+
                 
             elif self.turnPlay==2 and self.player2.currentPlay==None:
                 self.selectedCard=self.player2.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay,self.players)
@@ -185,7 +191,7 @@ class background:
                     cardBelongToPlayer=None
                     
                 else:
-                    print "Error !"
+                    print "Error ! report me now ! thanks"
                 
                 #now set None to play next deck
                 self.player1.currentPlay=None
@@ -195,6 +201,7 @@ class background:
                 
                 self.numOfDeckPlay+=1
                 self.tmpPlayedCard=[]
+                
                 
                 
             else:
@@ -209,28 +216,30 @@ class background:
             
 
             #if   event.type!=MOUSEBUTTONDOWN and event.button == 3 :
+            
             self.screen.fill((0x00, 0xb0, 0x00))
+            
             self.drawCardsInHand()
 
             if self.turnPlay==1:
-                self.showMessage("Waiting for palyer 1 to play")
+                self.showMessage("Waiting for "+ self.player1.name +" to play")
             if self.turnPlay==2:
-                self.showMessage("Waiting for palyer 2 to play")
+                self.showMessage("Waiting for "+ self.player2.name +" to play")
             if self.turnPlay==3:
-                self.showMessage("Waiting for palyer 3 to play")
+                self.showMessage("Waiting for "+ self.player3.name +" to play")
             if self.turnPlay==4:
                 if self.errorMsg :
                     self.showMessage(self.errorMsg)
                 else :
-                    self.showMessage("Waiting for you to play! Come on harryup")
+                    self.showMessage("Waiting for you to play! Come on "+ self.player4.name +" harryup")
                 pass
-                        
-            pygame.display.flip()                 
+            
+            self.showNames()            
+            pygame.display.flip()  
+                           
             pygame.time.delay(1000)
-                   # self.screen.blit(background, (30, 40))
             # DRAWING             
             
-            #self.cardGroup.draw(self.screen)
     #check how is turn now
     def howTurnNow(self,card1,card2,card3,card4):
         getMaxCardOfDeckPlay=self.tmpPlayedCard[0][0]
@@ -260,6 +269,7 @@ class background:
                 if self.playedCards[i][j].type==cardType.Hearts:
                     self.isPlayHeart=True
                     return            
+
     #check Players Play Correct Card
     def checkPlayCard(self,cardToPlay,player):
         if(self.isPlayHeart==False):
@@ -298,17 +308,14 @@ class background:
         #now just move straitly
         self.screen.fill((0x00, 0xb0, 0x00))
         moveCard.moveCard(toLocation[0],toLocation[1])
-        #moveCard.moveCard(0,0)
-        self.drawCardsInHand()                           
-        #pygame.display.flip()  
+        self.drawCardsInHand()              
+        self.showNames()             
         pygame.display.flip()
         pygame.time.delay(500)
         
     def drawCardsInHand(self):
         #draw cards of player1    
         self.player1.refreshHand(self.screen)
-
-                 
         #draw cards of player2
         self.player2.refreshHand(self.screen)
         #draw cards of player3
@@ -316,6 +323,22 @@ class background:
         #draw cards of player4
         self.player4.refreshHand(self.screen) 
  
+    def showNames(self):
+        font = pygame.font.Font(None, 20)
+        textPlayer1 = font.render(self.player1.name, 1, (10, 10, 10))
+        
+        textPlayer2 = font.render(self.player2.name, 1, (10, 10, 10))
+        
+        textPlayer3 = font.render(self.player3.name, 1, (10, 10, 10))
+        
+        textPlayer4 = font.render(self.player4.name, 1, (10, 10, 10))
+        
+        self.screen.blit(textPlayer1, (10,43))
+        self.screen.blit(textPlayer2, (375,10))
+        self.screen.blit(textPlayer3, (420,340))
+        self.screen.blit(textPlayer4, (55,380))
+        
+
     def showMessage(self,message,error=False):
         font = pygame.font.Font(None, 20)
         text = font.render(message, 1, (10, 10, 10))
@@ -325,6 +348,7 @@ class background:
             self.screen.blit(text, (40,400))
         elif error==True:
             self.screen.blit(text, (50,450))
+
     def addPlayedCards(self,cardP1,cardP2,cardP3,cardP4):
         self.playedCards.append([cardP1,cardP2,cardP3,cardP4])
         
@@ -333,10 +357,10 @@ class background:
         self.tmpPlayedCard=[]
         cc=cards()
         self.numOfDeckPlay=0
-        self.player1=Player("Player1",0);
-        self.player2=Player("Player2",1);
-        self.player3=Player("Player3",2);
-        self.player4=Player("Player4",3,True)
+        self.player1=Player(self.playerName[0],0);
+        self.player2=Player(self.playerName[1],1);
+        self.player3=Player(self.playerName[2],2);
+        self.player4=Player(self.playerName[3],3,True)
         cc.deck(self.player1, self.player2, self.player3, self.player4)
         self.putGround(self.player1,self.player2,self.player3,self.player4)   
         
@@ -349,7 +373,6 @@ class background:
             self.turnPlay=3
         if self.player4.has2Clubs==True:
             self.turnPlay=4
-            
             
     def putGround(self,player1,player2,player3,player4):
         
@@ -386,15 +409,11 @@ class background:
         for i in range(len(self.player4.cardsInHand)-1,-1,-1)  :
             if self.player4.cardsInHand[i].rect.collidepoint(x, y):
                 fc = self.player4.cardsInHand[i]
-                #print fc.name,fc.type
-                
-               
                 return fc
         return None
             
 def main():
     g = background()
-    #g.mainLoop()
 
  
 #this calls the 'main' function when this script is executed
