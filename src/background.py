@@ -28,29 +28,41 @@ from  Card import *
 
 class background:
     def __init__(self):
+        self.blink=0 #it will contorl blink text until 
+
         pygame.init()
-        self.screen = pygame.display.set_mode((500,450),1)
         
+        icon,tmp=load_image("icon.png")
+        pygame.display.set_icon(icon)        
+        
+        self.screen = pygame.display.set_mode((500,450),1)
+        self.ShowScoreBoardDialog =False
         self.playedCards=[]
         self.tmpPlayedCard=[]
+        self.scoreBoard=[]
         self.errorMsg=""
         self.isPlayHeart=False
-        pygame.display.set_caption('Hearts - 2.0.1')
-
-                
+        pygame.display.set_caption('PyHearts')
+        
+        
+        self.player1=None
+        self.player2=None
+        self.player3=None
+        self.player4=None
         self.playerName=[]
         self.playerName.append("gluegadget")
         self.playerName.append("dark_side")
-        self.playerName.append("carp")
+        self.playerName.append("Saimazoon")
         self.playerName.append("jandark")
        
         #reset hands
         self.playAgain()
         
         
-        #set 
-        #pygame.display.flip()  
+        #self.scoreBoard.append([0,0,0,0])
+        #self.scoreBoard.append([20,16,8,9])
         
+        #self.scoreBoard.append([ 100 , 50 , 9 , 9 ])
         
         self.emptyGround=False
    
@@ -73,7 +85,49 @@ class background:
         #sys.exit()
         indD=0
         while 1:  
+            #change status of self.blink
+            if self.blink==11 : self.blink=0
+            else : self.blink+=1
+            #check if Option Dialog is open dont let players to play
+            if self.ShowScoreBoardDialog==True:
+                self.scoreBoardDialog()
+                
+                pygame.display.flip()  
+                pygame.time.delay(20)
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        return                     
+                    if event.type==MOUSEBUTTONDOWN:
+                        self.backToGame()
+                            
+                    if event.type==KEYDOWN  :
+                        if event.key==27:
+                            self.backToGame()
+                continue
             if self.numOfDeckPlay==13:
+                if self.player1.tmpResult==26:
+                    self.player1.result-=26
+                    self.player2.result+=26
+                    self.player3.result+=13
+                    self.player4.result+=13
+                elif self.player2.tmpResult==26:
+                    self.player2.result-=26
+                    self.player1.result+=26
+                    self.player3.result+=26
+                    self.player4.result+=26
+                elif self.player3.tmpResult==26:
+                    self.player3.result-=26
+                    self.player1.result+=26
+                    self.player2.result+=26
+                    self.player4.result+=26
+                elif self.player4.tmpResult==26:
+                    self.player4.result-=26
+                    self.player1.result+=26
+                    self.player2.result+=26
+                    self.player3.result+=26
+                    
+                    
+                    
                 print ""
                 print ""
                 print ""
@@ -84,7 +138,24 @@ class background:
                 print ""
                 print ""
                 print ""
-                self.playAgain()
+                self.scoreBoard.append([self.player1.result,self.player2.result,self.player3.result,self.player4.result])
+                self.ShowScoreBoardDialog=True
+                self.scoreBoardDialog()
+                if self.player1.result>=100 or self.player2.result>=100 or self.player3.result>=100 or self.player4.result>=100 :
+                        self.playedCards=[]
+                        self.tmpPlayedCard=[]
+                        self.numOfDeckPlay=0 
+                        self.players=[]
+                        self.players.append(self.player1)
+                        self.players.append(self.player2)
+                        self.players.append(self.player3)
+                        self.players.append(self.player4)
+                        self.emptyGround=False          
+                        self.errorMsg=""
+                        self.isPlayHeart=False                                    
+                else:
+                    self.playAgain()
+                continue
             indD+=1
             if self.turnPlay==1 and self.player1.currentPlay==None:
                 self.selectedCard=self.player1.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay,self.players)
@@ -117,6 +188,9 @@ class background:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return  
+                if event.type==KEYDOWN:
+                    if event.key==27:
+                        self.ShowScoreBoardDialog=True
                 if event.type==MOUSEBUTTONDOWN:
                    if event.button==1:
                        if self.player4.currentPlay==None and self.turnPlay==4:
@@ -187,6 +261,7 @@ class background:
                         if card[0].type==cardType.Spades and card[0].name==cardNumber.queen:
                             result+=13
                     cardBelongToPlayer.result+=result
+                    cardBelongToPlayer.tmpResult+=result
                     print cardBelongToPlayer.name," get ",result," point"
                     cardBelongToPlayer=None
                     
@@ -237,7 +312,7 @@ class background:
             self.showNames()            
             pygame.display.flip()  
                            
-            pygame.time.delay(1000)
+            pygame.time.delay(50)
             # DRAWING             
             
     #check how is turn now
@@ -324,6 +399,7 @@ class background:
         self.player4.refreshHand(self.screen) 
  
     def showNames(self):
+        """print players name"""
         font = pygame.font.Font(None, 20)
         textPlayer1 = font.render(self.player1.name, 1, (10, 10, 10))
         
@@ -332,6 +408,10 @@ class background:
         textPlayer3 = font.render(self.player3.name, 1, (10, 10, 10))
         
         textPlayer4 = font.render(self.player4.name, 1, (10, 10, 10))
+        
+        textScoreBoard = font.render("Esc to go score board", 1, (10, 10, 10))
+        
+        self.screen.blit(textScoreBoard, (5,430))
         
         self.screen.blit(textPlayer1, (10,43))
         self.screen.blit(textPlayer2, (375,10))
@@ -357,10 +437,31 @@ class background:
         self.tmpPlayedCard=[]
         cc=cards()
         self.numOfDeckPlay=0
+        
+        #save players result
+        resultPlayer1=0
+        resultPlayer2=0
+        resultPlayer3=0
+        resultPlayer4=0
+
+        #check if this is first Play scape
+        if self.player1!=None:
+            resultPlayer1=self.player1.result
+            resultPlayer2=self.player2.result
+            resultPlayer3=self.player3.result
+            resultPlayer4=self.player4.result
+        
         self.player1=Player(self.playerName[0],0);
         self.player2=Player(self.playerName[1],1);
         self.player3=Player(self.playerName[2],2);
         self.player4=Player(self.playerName[3],3,True)
+        
+        #set Last players Result
+        self.player1.result=resultPlayer1
+        self.player2.result=resultPlayer2
+        self.player3.result=resultPlayer3
+        self.player4.result=resultPlayer4
+        
         cc.deck(self.player1, self.player2, self.player3, self.player4)
         self.putGround(self.player1,self.player2,self.player3,self.player4)   
         
@@ -411,10 +512,96 @@ class background:
                 fc = self.player4.cardsInHand[i]
                 return fc
         return None
+    
+    
+    def scoreBoardDialog(self):    
+        """show Board Dialog"""
+        bimg,tmp=load_image("background.png")
+        font = pygame.font.Font(None, 20)
+        self.screen.blit(bimg, (0,0))
+        textPlayer1 = font.render(self.player1.name, 1, (10, 10, 10))
+        self.screen.blit(textPlayer1, (5,45))       
+        
+        textPlayer2 = font.render(self.player2.name, 1, (10, 10, 10))
+        self.screen.blit(textPlayer2, (95,45))       
+
+        textPlayer3 = font.render(self.player3.name, 1, (10, 10, 10))
+        self.screen.blit(textPlayer3, (172,45))       
+
+        textPlayer4 = font.render(self.player4.name, 1, (10, 10, 10))
+        self.screen.blit(textPlayer4, (270,45)) 
+        if self.blink>=0 and self.blink<=5:
+            textBackGame = font.render("Click mouse button to back the game ...", 1, (0, 0, 0))
+            self.screen.blit(textBackGame, (5,10)) 
+        
+        textAbout = font.render("Developer : Milad Rastian", 1, (14, 58, 17))
+        self.screen.blit(textAbout, (340,180)) 
+        
+        textAbout = font.render("miladmovie@gmail.com", 1, (14, 58, 17))
+        self.screen.blit(textAbout, (340,195))        
+        
+        textAbout = font.render("http://fritux.com", 1, (14, 58, 17))
+        self.screen.blit(textAbout, (340,210)) 
+               
+        textAbout = font.render("Version : 2.0.0", 1, (14, 58, 17))
+        self.screen.blit(textAbout, (340,225))
+
+        textAbout = font.render("License : GPL", 1, (14, 58, 17))
+        self.screen.blit(textAbout, (340,240))        
+        xLocation=75
+        
+        #show players score 
+        for scores in self.scoreBoard:
+            fontColorPlayer1=(0, 0, 0)
+            fontColorPlayer2=(0, 0, 0)
+            fontColorPlayer3=(0, 0, 0)
+            fontColorPlayer4=(0, 0, 0)
+            minScore=scores[0]
             
+            if scores[0]<=scores[1] and scores[0]<=scores[2] and scores[0]<=scores[3]:
+                fontColorPlayer1=(234, 20, 35)
+            
+            if scores[1]<=scores[0] and scores[1]<=scores[2] and scores[1]<=scores[3]:
+                fontColorPlayer2=(234, 20, 35)
+
+            if scores[2]<=scores[0] and scores[2]<=scores[1] and scores[2]<=scores[3]:
+                fontColorPlayer3=(234, 20, 35)
+
+            if scores[3]<=scores[0] and scores[3]<=scores[1] and scores[3]<=scores[2]:
+                fontColorPlayer4=(234, 20, 35)
+                
+            textScoresPlayer1 = font.render(scores[0].__str__(), 1, fontColorPlayer1)
+            self.screen.blit(textScoresPlayer1, (30,xLocation))       
+            
+            textScoresPlayer2 = font.render(scores[1].__str__(), 1, fontColorPlayer2)
+            self.screen.blit(textScoresPlayer2, (115,xLocation))       
+    
+            textScoresPlayer3 = font.render(scores[2].__str__(), 1, fontColorPlayer3)
+            self.screen.blit(textScoresPlayer3, (200,xLocation))       
+    
+            textScoresPlayer4 = font.render(scores[3].__str__(), 1, fontColorPlayer4)
+            self.screen.blit(textScoresPlayer4, (285,xLocation))  
+            xLocation+=20
+            
+        if self.player1.result>=100 or self.player2.result>=100 or self.player3.result>=100 or self.player4.result>=100 :
+            if self.blink>=0 and self.blink<=5:
+                textEndGame = font.render("End of game Esc to play again ", 1, (255, 0, 0))
+                self.screen.blit(textEndGame, (10,430)) 
+
+
+    def backToGame(self):
+        """back to game"""
+        self.ShowScoreBoardDialog=False
+        if self.player1.result>=100 or self.player2.result>=100 or self.player3.result>=100 or self.player4.result>=100 :
+            self.scoreBoard=[]
+            self.player1.result=0
+            self.player2.result=0
+            self.player3.result=0
+            self.player4.result=0
+            self.playAgain()
+                    
 def main():
     g = background()
 
  
-#this calls the 'main' function when this script is executed
-if __name__ == '__main__': main()       
+      
