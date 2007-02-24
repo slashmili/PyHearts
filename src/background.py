@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #Game developed by Milad Rastian (miladmovie atsign gmail dot com) 
-#https://gna.org/projects/pyhearts/
+#http://home.gna.org/pyhearts/
 #I wrote this Game for course Artificial Intelligent in Yazd Jahad University
 #Thanks my teacher Mr Asghar Dehghani
 #I in this project I know how much I Love Python !
-#Copyright (C) 2006  Milad Rastian
+#Copyright (C) 2007  Milad Rastian
 #
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -88,7 +88,7 @@ class background:
             #change status of self.blink
             if self.blink==11 : self.blink=0
             else : self.blink+=1
-            #check if Option Dialog is open dont let players to play
+            #check if score board Dialog is open dont let players to play
             if self.ShowScoreBoardDialog==True:
                 self.scoreBoardDialog()
                 
@@ -104,12 +104,13 @@ class background:
                         if event.key==27:
                             self.backToGame()
                 continue
+            #check if one player get all cards give point to others
             if self.numOfDeckPlay==13:
                 if self.player1.tmpResult==26:
                     self.player1.result-=26
                     self.player2.result+=26
-                    self.player3.result+=13
-                    self.player4.result+=13
+                    self.player3.result+=26
+                    self.player4.result+=26
                 elif self.player2.tmpResult==26:
                     self.player2.result-=26
                     self.player1.result+=26
@@ -138,9 +139,12 @@ class background:
                 print ""
                 print ""
                 print ""
+                
+                #add last scores to scoreBoard
                 self.scoreBoard.append([self.player1.result,self.player2.result,self.player3.result,self.player4.result])
                 self.ShowScoreBoardDialog=True
                 self.scoreBoardDialog()
+                #if one player score is bigger than 100 then game is end and restart games object
                 if self.player1.result>=100 or self.player2.result>=100 or self.player3.result>=100 or self.player4.result>=100 :
                         self.playedCards=[]
                         self.tmpPlayedCard=[]
@@ -159,15 +163,12 @@ class background:
             indD+=1
             if self.turnPlay==1 and self.player1.currentPlay==None:
                 self.selectedCard=self.player1.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay,self.players)
-
                 self.player1.currentPlay=self.selectedCard
+                #move card to ground
                 self.moveCardSlowly(self.selectedCard,screenPlayer1[14])
                 self.tmpPlayedCard.append([self.selectedCard,1])
                 #print "Player 1 play ",self.selectedCard.name
                 self.selectedCard=None
-                
-
-                
             elif self.turnPlay==2 and self.player2.currentPlay==None:
                 self.selectedCard=self.player2.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay,self.players)
                 self.player2.currentPlay=self.selectedCard
@@ -175,7 +176,7 @@ class background:
                 self.tmpPlayedCard.append([self.selectedCard,2])
                 #print "Player 2 play ",self.selectedCard.name
                 self.selectedCard=None
-                #pygame.time.delay(500)
+
             elif self.turnPlay==3 and self.player3.currentPlay==None:
                 self.selectedCard=self.player3.play(self.tmpPlayedCard,self.playedCards,self.numOfDeckPlay,self.players)
                 self.player3.currentPlay=self.selectedCard
@@ -189,29 +190,25 @@ class background:
                 if event.type == QUIT:
                     return  
                 if event.type==KEYDOWN:
+                    #if press ESC go to score board
                     if event.key==27:
                         self.ShowScoreBoardDialog=True
+                
                 if event.type==MOUSEBUTTONDOWN:
                    if event.button==1:
+                       #check if turn is player4 and click mouse button ...
                        if self.player4.currentPlay==None and self.turnPlay==4:
                            self.selectedCard=self.selectedCard=self.getCard(event.pos[0],event.pos[1])
                            if self.selectedCard:
+                               #check if selected card is true to play
                                if self.checkPlayCard(self.selectedCard,self.player4)==False:
                                    self.selectedCard=None
                                    break
-                               
                                self.moveCardSlowly(self.selectedCard,screenPlayer4[14])
-                               #self.selectedCard.isPlayed=True
                                self.player4.currentPlay=self.selectedCard
-                               
                                self.tmpPlayedCard.append([self.selectedCard,4])
-                               #print "Player 4 play ",self.selectedCard.name
-                               #self.selectedCard=None
-                           
-                           
-                       #print event.pos[0],event.pos[1]
-                       #self.player4.moveAndShowCard(0,0, 0,self.screen)
-                           
+                               self.selectedCard=None
+                               
                    elif  event.button == 3:
                        self.selectedCard=self.selectedCard=self.getCard(event.pos[0],event.pos[1]) 
                        #try to show pop selected Card
@@ -229,6 +226,8 @@ class background:
                                     if self.player4.cardsInHand[i].isPlayed==False:
                                         self.player4.moveCard(i,screenPlayer4[i][0], screenPlayer4[i][1])
             
+            
+            #now if not turn to any player to play do ...
             if self.player1.currentPlay!=None   and self.player2.currentPlay!=None   and self.player3.currentPlay!=None   and self.player4.currentPlay!=None  :
                 #palyed on deck so we put ground in  PlayedCards
                 self.player1.currentPlay.isPlayed=True
@@ -272,6 +271,10 @@ class background:
                 self.player1.currentPlay=None
                 self.player2.currentPlay=None
                 self.player3.currentPlay=None
+                #send out card location !
+                #I don't exactly why ! but some times played card come over new card which is on ground
+                #so that I send out card form screen !!!
+                self.moveOut(self.player4.currentPlay)
                 self.player4.currentPlay=None
                 
                 self.numOfDeckPlay+=1
@@ -504,7 +507,9 @@ class background:
         for i in range(0,13):
             player4.moveAndShowCard(i,screenPlayer4[i][0], screenPlayer4[i][1],self.screen)
         
-        
+     
+    def moveOut(self,card):
+        card.moveCard(600, 600)
         
     def getCard(self,x,y):
         for i in range(len(self.player4.cardsInHand)-1,-1,-1)  :

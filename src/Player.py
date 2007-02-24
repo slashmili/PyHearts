@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 #Game developed by Milad Rastian (miladmovie atsign gmail dot com) 
-#http://www.fritux.com/
+#http://home.gna.org/pyhearts/
 #I wrote this Game for course Artificial Intelligent in Yazd Jahad University
 #Thanks my teacher Mr Asghar Dehghani
 #I in this project I know how much I Love Python !
-#Copyright (C) 2006  Milad Rastiann
+#Copyright (C) 2007  Milad Rastian
 #
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -18,7 +19,6 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
 
 from inits import  *
 
@@ -582,7 +582,9 @@ class Player:
              if self.cardsInHand[i].isPlayed==False:
                  self.showCard(i, screen)
              elif self.currentPlay!=None :
+
                  if self.currentPlay.index==i:
+
                      self.showCard(i, screen)
                 
                  

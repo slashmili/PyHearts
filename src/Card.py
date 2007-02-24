@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 #Game developed by Milad Rastian (miladmovie atsign gmail dot com) 
-#http://weblog.miladmovie.com/
+#http://home.gna.org/pyhearts/
 #I wrote this Game for course Artificial Intelligent in Yazd Jahad University
 #Thanks my teacher Mr Asghar Dehghani
 #I in this project I know how much I Love Python !
-#Copyright (C) 2006  Milad Rastian
+#Copyright (C) 2007  Milad Rastian
 #
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -18,7 +19,7 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#Read more about GNU General Public License :http://www.gnu.org/licenses/gpl.txt
+
 import random
 import os, pygame,math
 from pygame.locals import *
