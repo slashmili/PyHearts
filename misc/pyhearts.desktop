@@ -1,12 +1,12 @@
 [Desktop Entry]
-Version=2.0.0
+Version=1.0
 Encoding=UTF-8
+Type=Application
 Name=PyHearts
 Comment=Black Lady Cards Game
 Icon=/usr/share/pixmaps/pyhearts/pyhearts.png
 Exec=/usr/bin/pyhearts
-Type=Application
-Categories=GNOME;Application;Games;X-Parsix;
+Categories=Application;Game;ArcadeGame
 Terminal=false
 X-Desktop-File-Install-Version=0.10
 GenericName[en_US]=
