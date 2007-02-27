@@ -1,5 +1,8 @@
 you need module pygame (http://www.pygame.org)
-and then just run pyhearts.py
+and then 
+make
+make install (root)
+
 Have fun!
 
 report bug at miladmovie_atsign_gmail_dot_com
