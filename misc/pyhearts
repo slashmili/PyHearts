@@ -2,4 +2,4 @@
 #
 # Run sim main python program.
 #
-/usr/bin/python /usr/share/pyhearts/pyhearts.pyc $*
+/usr/bin/python /usr/share/games/pyhearts/bin/pyhearts.pyc $*

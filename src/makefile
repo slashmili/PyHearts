@@ -1,4 +1,4 @@
-PKGDIR = /usr/share/pyhearts
+PKGDIR = /usr/share/games/pyhearts/bin
 
 all: 
 	@../tools/py-compile *.py 
@@ -7,7 +7,7 @@ clean:
 	rm -fv *.pyc *.pyo *~ *.bak *.gladep *.o *.so
 
 install:
-	mkdir -p $(DESTDIR)/usr/share/pyhearts
+	mkdir -p $(DESTDIR)/usr/share/games/pyhearts/bin
 
 		
 	install -m755 *.pyc $(DESTDIR)/$(PKGDIR)/.

@@ -548,7 +548,7 @@ class background:
         textAbout = font.render("http://fritux.com", 1, (14, 58, 17))
         self.screen.blit(textAbout, (340,210)) 
                
-        textAbout = font.render("Version : 2.0.0", 1, (14, 58, 17))
+        textAbout = font.render("Version : 2.1.0", 1, (14, 58, 17))
         self.screen.blit(textAbout, (340,225))
 
         textAbout = font.render("License : GPL", 1, (14, 58, 17))

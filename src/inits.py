@@ -45,7 +45,7 @@ class cardNumber:
 
     
 def load_image(name, colorkey=None):
-    fullname = os.path.join('/usr/share/pyhearts/data/img', name)
+    fullname = os.path.join('/usr/share/games/pyhearts/data/img', name)
 
     try:
         image=pygame.image.load(fullname)
